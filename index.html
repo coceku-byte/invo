@@ -1,634 +1,217 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Invoice — Mahesa VW Borobudur</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice Mahesa VW</title>
 
-  <style>
-    :root{
-      --bg:#f3f5f9;
-      --card:#ffffff;
-      --ink:#0f172a;
-      --muted:#64748b;
-      --line:#e2e8f0;
-      --head:#111827;
-      --accent:#f59e0b;
-      --accent2:#fb923c;
-      --ok:#16a34a;
-      --bad:#ef4444;
-      --btn1:#22c55e;
-      --btn2:#2563eb;
-    }
+<style>
+body{font-family:Arial;background:#f3f4f6;padding:20px}
+.container{max-width:900px;margin:auto;background:#fff;padding:30px;box-shadow:0 15px 40px rgba(0,0,0,.08)}
+.header{display:flex;gap:15px;align-items:center;border-bottom:3px solid #f59e0b;padding-bottom:10px}
+.header img{width:70px}
+.header h1{margin:0;color:#f59e0b}
+.header p{margin:2px 0 0 0;font-size:13px;font-weight:600;color:#111}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      padding:16px;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-      background:var(--bg);
-      color:var(--ink);
-    }
-    .shell{max-width:980px;margin:0 auto;}
-    .card{
-      background:var(--card);
-      border:1px solid rgba(226,232,240,.95);
-      border-radius:18px;
-      box-shadow:0 18px 45px rgba(2,6,23,.10);
-      overflow:hidden;
-    }
+input,select{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ccc;border-radius:6px}
+button{background:#f59e0b;border:none;padding:10px 15px;color:white;font-weight:bold;border-radius:6px;cursor:pointer}
+button:hover{opacity:.9}
 
-    /* ====== FORM ====== */
-    .formTop{
-      padding:16px 16px 12px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      background:linear-gradient(180deg,#ffffff,#fbfbfd);
-    }
-    .formTop h1{margin:0;font-size:20px;letter-spacing:.2px}
-    .formTop .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35}
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      color:#fff;
-      background:var(--head);
-      white-space:nowrap;
-    }
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th{background:#f59e0b;color:white;padding:8px}
+td{border:1px solid #ccc;padding:8px}
+.right{text-align:right;font-weight:bold}
 
-    .formBody{padding:16px}
-    label{display:block;margin-top:14px;font-weight:1000}
-    input,select,textarea{
-      width:100%;
-      margin-top:6px;
-      padding:12px 12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      font-size:16px;
-      outline:none;
-      background:#fff;
-      color:var(--ink);
-    }
-    textarea{min-height:90px;resize:vertical}
-    input:focus,select:focus,textarea:focus{border-color:#94a3b8}
+.total-box{margin-left:58%;width:42%}
 
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .grid3{display:grid;grid-template-columns:1.2fr .7fr 1fr;gap:12px}
+.status{
+position:absolute;
+right:50px;
+top:140px;
+font-size:48px;
+font-weight:bold;
+transform:rotate(-15deg);
+opacity:0.18;
+display:none
+}
+.lunas{color:green}
+.belum{color:red}
 
-    .sectionTitle{
-      margin-top:18px;
-      font-weight:1000;
-      letter-spacing:.2px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .sectionTitle small{color:var(--muted);font-weight:700}
-
-    .addonRow{
-      display:grid;
-      grid-template-columns:1.4fr .6fr 1fr auto;
-      gap:10px;
-      align-items:center;
-      margin-top:10px;
-      padding:10px;
-      border:1px dashed #cbd5e1;
-      border-radius:14px;
-      background:#fbfdff;
-    }
-    .addonRow input{margin-top:0}
-    .miniBtn{
-      border:0;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:1000;
-      cursor:pointer;
-      background:#ef4444;
-      color:#fff;
-      white-space:nowrap;
-    }
-
-    .btnRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-    .btn{
-      border:0;border-radius:14px;
-      padding:14px 14px;
-      font-weight:1000;
-      cursor:pointer;
-      font-size:16px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btnAdd{background:#e5e7eb;color:#111827;}
-    .btnGen{background:linear-gradient(90deg,var(--btn1),var(--btn2));color:#fff;}
-
-    .hint{margin-top:10px;color:var(--muted);font-size:12.5px;line-height:1.35}
-
-    @media (max-width:720px){
-      .grid2,.grid3{grid-template-columns:1fr}
-      .btnRow{grid-template-columns:1fr}
-      .addonRow{grid-template-columns:1fr 1fr 1fr auto}
-    }
-    @media (max-width:520px){
-      .addonRow{grid-template-columns:1fr 1fr}
-      .addonRow .miniBtn{grid-column:1 / -1}
-    }
-
-    /* ======== PRINT (RAPI A4) ======== */
-    #printArea{display:none}
-    @page { size: A4; margin: 12mm; }
-
-    @media print{
-      html,body{background:#fff !important;padding:0;margin:0}
-      .card{box-shadow:none !important;border:0 !important;border-radius:0 !important}
-      #formArea{display:none !important}
-      #printArea{display:block !important}
-    }
-
-    .invHeader{
-      background:var(--head);
-      color:#fff;
-      padding:14px 14px;
-      border-radius:12px;
-      display:grid;
-      grid-template-columns:72px 1fr;
-      gap:12px;
-      align-items:center;
-    }
-    .logoBox{
-      width:72px;height:72px;border-radius:14px;overflow:hidden;
-      background:#0b1220;border:1px solid rgba(255,255,255,.12);
-    }
-    .logoBox img{width:100%;height:100%;object-fit:cover}
-    .invTitle .brand{
-      margin:0;
-      color:var(--accent);
-      font-size:20px;
-      font-weight:1000;
-      letter-spacing:.6px;
-      line-height:1.1;
-    }
-    .invTitle .addr{
-      margin-top:6px;
-      font-size:12.5px;
-      font-weight:900;
-      color:#fff;
-      opacity:.96;
-      line-height:1.35;
-    }
-
-    .invBody{padding:14px 2px 0}
-
-    .metaGrid{
-      display:grid;
-      grid-template-columns: 1fr 260px;
-      gap:10px;
-      align-items:start;
-      margin-top:10px;
-    }
-    .metaBox{font-size:12.8px;line-height:1.6;}
-    .metaBox .fact{font-size:14.5px;font-weight:1000;margin:0 0 6px;}
-    .metaBox b{font-weight:1000}
-
-    .stampWrap{position:relative; min-height:78px;}
-    .stamp{
-      position:absolute;
-      right:0;
-      top:4px;
-      transform:rotate(-12deg);
-      padding:8px 14px;
-      border-radius:10px;
-      font-size:38px;
-      font-weight:1000;
-      letter-spacing:3px;
-      opacity:.30;
-      display:none;
-      border:6px solid;
-      user-select:none;
-      pointer-events:none;
-    }
-    .stamp.on{display:inline-block}
-    .stamp.lunas{color:var(--ok);border-color:var(--ok)}
-    .stamp.belum{color:var(--bad);border-color:var(--bad)}
-
-    table.invTable{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:12px;
-      font-size:12.8px;
-      table-layout:fixed;
-    }
-    table.invTable th{
-      background:linear-gradient(180deg,var(--accent),var(--accent2));
-      color:#111827;
-      border:2px solid #d97706;
-      padding:9px 10px;
-      text-align:left;
-      font-weight:1000;
-    }
-    table.invTable td{
-      border:2px solid #d1d5db;
-      padding:9px 10px;
-      vertical-align:top;
-    }
-    table.invTable th:nth-child(1), table.invTable td:nth-child(1){width:46%}
-    table.invTable th:nth-child(2), table.invTable td:nth-child(2){width:12%; text-align:center}
-    table.invTable th:nth-child(3), table.invTable td:nth-child(3){width:21%; text-align:right}
-    table.invTable th:nth-child(4), table.invTable td:nth-child(4){width:21%; text-align:right}
-
-    .num{text-align:right;white-space:nowrap}
-    .center{text-align:center}
-
-    /* totals PRESISI sejajar kolom Harga+Total (21% + 21% = 42%) */
-    table.totals{
-      width:42%;
-      margin-left:58%;
-      margin-top:10px;
-      border-collapse:collapse;
-      font-size:12.8px;
-    }
-    table.totals td{
-      border:2px solid #d1d5db;
-      padding:9px 10px;
-      font-weight:900;
-    }
-    table.totals td.lbl{
-      width:55%;
-      background:#f3f4f6;
-      text-align:right;
-    }
-    table.totals tr.kek td{
-      background:#fff7cc;
-      font-weight:1000;
-      font-size:13.5px;
-    }
-
-    .notePrint{
-      margin-top:10px;
-      font-size:12.5px;
-      color:#334155;
-      line-height:1.45;
-      white-space:pre-line;
-    }
-  </style>
+@media print{
+body{background:white}
+.no-print{display:none}
+}
+</style>
 </head>
 
 <body>
-<div class="shell">
-  <div class="card">
 
-    <!-- ===================== FORM ===================== -->
-    <div id="formArea">
-      <div class="formTop">
-        <div>
-          <h1>Invoice Admin — Mahesa VW</h1>
-          <div class="sub">Isi data → <b>Generate PDF</b> (print). Semua fitur tetap lengkap.</div>
-        </div>
-        <div class="pill" id="pillStatus">STATUS: TANPA</div>
-      </div>
+<div class="container">
 
-      <div class="formBody">
-        <label>Upload Logo (opsional)</label>
-        <input type="file" id="logoInput" accept="image/*" />
+<div class="header">
+<img id="logoPreview">
+<div>
+<h1>MAHESA VW BOROBUDUR</h1>
+<p>Jl. Medang Kamulan, Borobudur, Magelang • WA: 0823-5505-7022</p>
+</div>
+</div>
 
-        <div class="grid2">
-          <div>
-            <label>Nama Customer</label>
-            <input id="custName" placeholder="Contoh: Nisa Inlingua" />
-          </div>
-          <div>
-            <label>No HP</label>
-            <input id="custHp" placeholder="08xxxxxxxxxx" />
-          </div>
-        </div>
+<h3 class="no-print">Data Invoice</h3>
 
-        <div class="grid2">
-          <div>
-            <label>Tanggal Tour</label>
-            <input type="date" id="tourDate" />
-          </div>
-          <div>
-            <label>Status Stamp</label>
-            <select id="stampMode">
-              <option value="none">Tanpa Tampilan</option>
-              <option value="lunas">LUNAS</option>
-              <option value="belum">BELUM LUNAS</option>
-            </select>
-          </div>
-        </div>
+<input type="file" id="logoInput" class="no-print">
 
-        <label>Pilih Paket VW (harga otomatis)</label>
-        <select id="paket">
-          <option value="400000|Paket Short (2 Jam)">Paket Short (2 Jam)</option>
-          <option value="550000|Paket Medium (3 Jam)">Paket Medium (3 Jam)</option>
-          <option value="700000|Paket Long (4 Jam)">Paket Long (4 Jam)</option>
-          <option value="0|Custom">Custom</option>
-        </select>
+<label>Nama Customer</label>
+<input type="text" id="nama">
 
-        <div class="grid3">
-          <div>
-            <label>Nama Paket (bisa diedit)</label>
-            <input id="mainName" placeholder="Nama paket" />
-          </div>
-          <div>
-            <label>Jumlah Unit</label>
-            <input type="number" id="qty" value="1" min="1" />
-          </div>
-          <div>
-            <label>Harga / Unit (bisa diedit)</label>
-            <input type="number" id="priceMain" value="400000" min="0" />
-          </div>
-        </div>
+<label>No HP</label>
+<input type="text" id="hp">
 
-        <div class="grid2">
-          <div>
-            <label>DP</label>
-            <input type="number" id="dp" value="0" min="0" />
-          </div>
-          <div>
-            <label>Catatan (opsional)</label>
-            <textarea id="note" placeholder="Contoh: Meeting point / jam start / permintaan khusus."></textarea>
-          </div>
-        </div>
+<label>Tanggal Tour</label>
+<input type="date" id="tanggal">
 
-        <div class="sectionTitle">
-          <div>Addons</div>
-          <small>Nama + Qty + Harga</small>
-        </div>
+<label>Pilih Paket</label>
+<select id="paket" onchange="syncPaket()">
+<option value="400000|Paket Short (2 Jam)">Paket Short (2 Jam)</option>
+<option value="550000|Paket Medium (3 Jam)">Paket Medium (3 Jam)</option>
+<option value="700000|Paket Long (4 Jam)">Paket Long (4 Jam)</option>
+<option value="0|Custom">Custom</option>
+</select>
 
-        <div id="addonsArea"></div>
+<label>Nama Paket</label>
+<input type="text" id="paketNama">
 
-        <div class="btnRow">
-          <button class="btn btnAdd" type="button" id="btnAddAddon">+ Tambah Addon</button>
-          <button class="btn btnGen" type="button" id="btnGenerate">Generate PDF</button>
-        </div>
+<label>Jumlah</label>
+<input type="number" id="qty" value="1">
 
-        <div class="hint">
-          Nomor invoice otomatis mulai <b>32244</b> dan meneruskan angka (tersimpan di browser).<br>
-          iPhone: setelah Print Preview → Share → Save to Files.
-        </div>
-      </div>
-    </div>
+<label>Harga</label>
+<input type="number" id="harga">
 
-    <!-- ===================== PRINT ===================== -->
-    <div id="printArea">
-      <div class="invHeader">
-        <div class="logoBox"><img id="pLogo" alt="Logo"/></div>
-        <div class="invTitle">
-          <div class="brand">MAHESA VW BOROBUDUR</div>
-          <div class="addr" id="pAddr">
-            Jl. Medang Kamulan, Dusun XIII, Borobudur, Kec. Borobudur, Magelang, Jawa Tengah • Telp/WA: 0823-5505-7022
-          </div>
-        </div>
-      </div>
+<button onclick="addItem()" class="no-print">Tambah Item</button>
 
-      <div class="invBody">
-        <div class="metaGrid">
-          <div class="metaBox">
-            <div class="fact">FAKTUR #: <span id="pInv">-</span></div>
-            <div><b>Tanggal Tour:</b> <span id="pTourDate">-</span></div>
-            <div><b>Nama Customer:</b> <span id="pCust">-</span></div>
-            <div><b>No HP:</b> <span id="pHp">-</span></div>
-          </div>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Qty</th>
+<th>Harga</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="itemBody"></tbody>
+</table>
 
-          <div class="stampWrap">
-            <span class="stamp lunas" id="stampLunas">LUNAS</span>
-            <span class="stamp belum" id="stampBelum">BELUM</span>
-          </div>
-        </div>
+<label>DP</label>
+<input type="number" id="dp" value="0">
 
-        <table class="invTable">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th class="center">Qty</th>
-              <th class="num">Harga</th>
-              <th class="num">Total</th>
-            </tr>
-          </thead>
-          <tbody id="pRows"></tbody>
-        </table>
+<label>Status</label>
+<select id="status">
+<option value="none">Tanpa Tampilan</option>
+<option value="lunas">LUNAS</option>
+<option value="belum">BELUM LUNAS</option>
+</select>
 
-        <table class="totals">
-          <tr>
-            <td class="lbl">Subtotal</td>
-            <td class="num" id="pSub">Rp 0</td>
-          </tr>
-          <tr>
-            <td class="lbl">DP</td>
-            <td class="num" id="pDP">-Rp 0</td>
-          </tr>
-          <tr class="kek">
-            <td class="lbl">Kekurangan</td>
-            <td class="num" id="pBal">Rp 0</td>
-          </tr>
-        </table>
+<div class="total-box">
+<table>
+<tr><td class="right">Subtotal</td><td class="right" id="subtotal">0</td></tr>
+<tr><td class="right">DP</td><td class="right" id="dpVal">0</td></tr>
+<tr><td class="right">Kekurangan</td><td class="right" id="sisa">0</td></tr>
+</table>
+</div>
 
-        <div class="notePrint" id="pNote"></div>
-      </div>
-    </div>
+<div id="stamp" class="status">LUNAS</div>
 
-  </div>
+<br>
+<button onclick="generate()" class="no-print">Generate PDF</button>
+
 </div>
 
 <script>
-/* ========= CONFIG ========= */
-/* kalau mau kirim ke Google Sheet, isi URL Apps Script kamu di sini */
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwMZa4ptlGBqzk1wiIKQDEDlA2kID915z6Vaxt37tkjEZSRwq5XMNrC-rS8o_0UX8Sr/exec";
-/* kalau tidak mau kirim ke sheet, ubah jadi kosong:  const SHEET_API_URL = ""; */
+let invoiceNo = localStorage.getItem("invoiceNo") || 32244;
+localStorage.setItem("invoiceNo", parseInt(invoiceNo)+1);
 
-const KEY_INV = "mahesa_inv_no_full";
-const START_INV = 32244;
-const KEY_LOGO = "mahesa_logo_full";
-
-/* ========= HELPERS ========= */
-const $ = (id)=>document.getElementById(id);
-const rupiah = (n)=>"Rp "+Number(n||0).toLocaleString("id-ID");
-function esc(s){
-  return String(s||"")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function fmtDateISOToID(iso){
-  if(!iso) return "";
-  const [y,m,d] = iso.split("-");
-  return `${d}/${m}/${y}`;
-}
-function nextNo(){
-  const v = localStorage.getItem(KEY_INV);
-  const next = v ? (Number(v)+1) : START_INV;
-  localStorage.setItem(KEY_INV, String(next));
-  return String(next);
+function formatRp(n){
+return "Rp " + Number(n).toLocaleString("id-ID");
 }
 
-/* ========= LOGO ========= */
-$("logoInput").addEventListener("change", ()=>{
-  const f = $("logoInput").files && $("logoInput").files[0];
-  if(!f) return;
-  const r = new FileReader();
-  r.onload = (e)=> localStorage.setItem(KEY_LOGO, e.target.result);
-  r.readAsDataURL(f);
-});
-function loadLogoToPrint(){
-  const data = localStorage.getItem(KEY_LOGO);
-  if(data) $("pLogo").src = data;
-  else $("pLogo").src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Crect width='72' height='72' fill='%23f59e0b'/%3E%3Ctext x='50%25' y='56%25' font-family='Arial' font-size='18' font-weight='900' text-anchor='middle' fill='%23111827'%3EMVW%3C/text%3E%3C/svg%3E";
-}
-
-/* ========= STATUS PILL ========= */
-function updatePill(){
-  const m = $("stampMode").value;
-  const text = (m==="lunas") ? "LUNAS" : (m==="belum") ? "BELUM LUNAS" : "TANPA";
-  $("pillStatus").textContent = "STATUS: " + text;
-  $("pillStatus").style.background = (m==="lunas") ? "#16a34a" : (m==="belum") ? "#ef4444" : "#111827";
-}
-$("stampMode").addEventListener("change", updatePill);
-
-/* ========= PAKET ========= */
 function syncPaket(){
-  const [price, name] = $("paket").value.split("|");
-  if(name === "Custom"){
-    $("mainName").value = "";
-    $("priceMain").value = "";
-    $("mainName").focus();
-  } else {
-    $("mainName").value = name;
-    $("priceMain").value = Number(price||0);
-  }
-}
-$("paket").addEventListener("change", syncPaket);
-
-/* ========= ADDONS ========= */
-function addAddon(name="", qty="1", price="0"){
-  const row = document.createElement("div");
-  row.className = "addonRow";
-  row.innerHTML = `
-    <div><input class="an" placeholder="Nama Addon" value="${esc(name)}"></div>
-    <div><input class="aq" type="number" min="0" inputmode="numeric" placeholder="Qty" value="${esc(qty)}"></div>
-    <div><input class="ap" type="number" min="0" inputmode="numeric" placeholder="Harga" value="${esc(price)}"></div>
-    <div><button class="miniBtn" type="button">Hapus</button></div>
-  `;
-  row.querySelector("button").addEventListener("click", ()=>row.remove());
-  $("addonsArea").appendChild(row);
+let val=document.getElementById("paket").value.split("|");
+document.getElementById("paketNama").value=val[1];
+document.getElementById("harga").value=val[0];
 }
 
-/* tombol add addon */
-$("btnAddAddon").addEventListener("click", ()=>addAddon());
+function addItem(){
+let name=document.getElementById("paketNama").value;
+let qty=parseInt(document.getElementById("qty").value);
+let price=parseInt(document.getElementById("harga").value);
 
-/* ========= GENERATE ========= */
-async function generate(){
-  const no = nextNo();
+if(!name||!qty||!price) return;
 
-  const tourISO = $("tourDate").value;
-  if(!tourISO){ alert("Tanggal tour wajib diisi."); return; }
+let total=qty*price;
 
-  const nama = ($("custName").value||"").trim();
-  const hp   = ($("custHp").value||"").trim();
+let row=`<tr>
+<td>${name}</td>
+<td>${qty}</td>
+<td>${formatRp(price)}</td>
+<td>${formatRp(total)}</td>
+</tr>`;
 
-  const paketName = ($("mainName").value||"").trim();
-  if(!paketName){ alert("Nama paket kosong. Pilih paket atau isi Custom."); return; }
-
-  const qtyMain   = Number($("qty").value||0);
-  if(!(qtyMain>0)){ alert("Jumlah unit minimal 1."); return; }
-
-  const priceMain = Number($("priceMain").value||0);
-  const dp        = Number($("dp").value||0);
-
-  const mode = $("stampMode").value;
-  const status = (mode==="lunas") ? "LUNAS" : (mode==="belum") ? "BELUM LUNAS" : "TANPA";
-
-  const tourDate = fmtDateISOToID(tourISO);
-
-  // items list
-  const items = [];
-  items.push({name: paketName, qty: qtyMain, price: priceMain});
-
-  document.querySelectorAll("#addonsArea .addonRow").forEach(r=>{
-    const n = (r.querySelector(".an").value||"").trim();
-    const q = Number(r.querySelector(".aq").value||0);
-    const p = Number(r.querySelector(".ap").value||0);
-    if(n && q>0) items.push({name:n, qty:q, price:p});
-  });
-
-  let subtotal = 0;
-  items.forEach(it => subtotal += (Number(it.qty)||0)*(Number(it.price)||0));
-  const sisa = Math.max(subtotal - dp, 0);
-
-  // send to sheet (opsional)
-  if(SHEET_API_URL){
-    fetch(SHEET_API_URL, {
-      method:"POST",
-      headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        no: no,
-        tanggal: tourDate,
-        nama: nama,
-        hp: hp,
-        paket: paketName,
-        jumlah: qtyMain,
-        total: subtotal,
-        dp: dp,
-        sisa: sisa,
-        status: status
-      })
-    }).catch(()=>{});
-  }
-
-  // Fill print
-  $("pInv").textContent = no;
-  $("pTourDate").textContent = tourDate;
-  $("pCust").textContent = nama || "-";
-  $("pHp").textContent = hp || "-";
-
-  loadLogoToPrint();
-
-  $("stampLunas").classList.remove("on");
-  $("stampBelum").classList.remove("on");
-  if(mode==="lunas") $("stampLunas").classList.add("on");
-  if(mode==="belum") $("stampBelum").classList.add("on");
-
-  const tb = $("pRows");
-  tb.innerHTML = "";
-  items.forEach(it=>{
-    const t = (Number(it.qty)||0)*(Number(it.price)||0);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${esc(it.name)}</td>
-      <td class="center">${Number(it.qty||0)}</td>
-      <td class="num">${rupiah(it.price)}</td>
-      <td class="num">${rupiah(t)}</td>
-    `;
-    tb.appendChild(tr);
-  });
-
-  $("pSub").textContent = rupiah(subtotal);
-  $("pDP").textContent  = "-"+rupiah(dp);
-  $("pBal").textContent = rupiah(sisa);
-
-  const note = ($("note").value||"").trim();
-  $("pNote").textContent = note ? ("Catatan: "+note) : "";
-
-  window.print();
+document.getElementById("itemBody").innerHTML+=row;
+calculate();
 }
-$("btnGenerate").addEventListener("click", generate);
 
-/* ========= INIT ========= */
-(function init(){
-  const iso = new Date().toISOString().slice(0,10);
-  $("tourDate").value = iso;
+function calculate(){
+let rows=document.querySelectorAll("#itemBody tr");
+let subtotal=0;
+rows.forEach(r=>{
+let val=r.children[3].innerText.replace(/[^0-9]/g,'');
+subtotal+=parseInt(val);
+});
+let dp=parseInt(document.getElementById("dp").value)||0;
+let sisa=subtotal-dp;
 
-  syncPaket();
-  updatePill();
+document.getElementById("subtotal").innerText=formatRp(subtotal);
+document.getElementById("dpVal").innerText="- "+formatRp(dp);
+document.getElementById("sisa").innerText=formatRp(sisa);
 
-  // kalau mau 1 baris addon default, buka baris ini:
-  // addAddon("", "1", "0");
-})();
+let status=document.getElementById("status").value;
+let stamp=document.getElementById("stamp");
+
+if(status==="lunas"){
+stamp.style.display="block";
+stamp.className="status lunas";
+stamp.innerText="LUNAS";
+}
+else if(status==="belum"){
+stamp.style.display="block";
+stamp.className="status belum";
+stamp.innerText="BELUM LUNAS";
+}
+else{
+stamp.style.display="none";
+}
+}
+
+document.getElementById("dp").addEventListener("input",calculate);
+document.getElementById("status").addEventListener("change",calculate);
+
+function generate(){
+calculate();
+
+let nama=document.getElementById("nama").value||"Invoice";
+let clean=nama.replace(/[^a-zA-Z0-9]/g,"-");
+document.title=clean+"_"+invoiceNo;
+
+window.print();
+}
+
+document.getElementById("logoInput").addEventListener("change",function(e){
+const reader=new FileReader();
+reader.onload=function(){
+document.getElementById("logoPreview").src=reader.result;
+}
+reader.readAsDataURL(e.target.files[0]);
+});
 </script>
+
 </body>
 </html>

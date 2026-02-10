@@ -1,664 +1,338 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Invoice — Mahesa VW Borobudur</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice Mahesa VW</title>
 
-  <style>
-    :root{
-      --bg:#f3f5f9;
-      --card:#ffffff;
-      --ink:#0f172a;
-      --muted:#64748b;
-      --line:#e2e8f0;
+<style>
+body{
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+  background:#f3f4f6;
+  margin:0;
+  padding:20px;
+}
 
-      --head:#111827;
-      --accent:#f59e0b;
-      --accent2:#fb923c;
+.card{
+  background:#fff;
+  max-width:900px;
+  margin:auto;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
 
-      --ok:#16a34a;
-      --bad:#ef4444;
-      --btn1:#22c55e;
-      --btn2:#2563eb;
-    }
+h2{margin-top:0}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      padding:16px;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-      background:var(--bg);
-      color:var(--ink);
-    }
+input, select{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  margin-top:5px;
+  margin-bottom:15px;
+  font-size:14px;
+}
 
-    .shell{max-width:980px;margin:0 auto;}
-    .card{
-      background:var(--card);
-      border:1px solid rgba(226,232,240,.9);
-      border-radius:18px;
-      box-shadow:0 18px 45px rgba(2,6,23,.10);
-      overflow:hidden;
-    }
+button{
+  background:linear-gradient(135deg,#16a34a,#2563eb);
+  border:none;
+  padding:12px 20px;
+  color:#fff;
+  font-weight:700;
+  border-radius:10px;
+  cursor:pointer;
+}
 
-    /* ====== FORM ====== */
-    .formTop{
-      padding:16px 16px 12px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      background:linear-gradient(180deg, #ffffff, #fbfbfd);
-    }
-    .formTop h1{margin:0;font-size:20px;letter-spacing:.2px}
-    .formTop .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35}
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      color:#fff;
-      background:var(--head);
-      white-space:nowrap;
-    }
+button:hover{opacity:.9}
 
-    .formBody{padding:16px}
-    label{display:block;margin-top:14px;font-weight:900}
-    input,select,textarea{
-      width:100%;
-      margin-top:6px;
-      padding:12px 12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      font-size:16px;
-      outline:none;
-      background:#fff;
-      color:var(--ink);
-    }
-    textarea{min-height:90px;resize:vertical}
-    input:focus,select:focus,textarea:focus{border-color:#94a3b8}
+.tableInput{
+  width:100%;
+  border-collapse:collapse;
+}
 
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .grid3{display:grid;grid-template-columns:1.2fr .7fr 1fr;gap:12px}
+.tableInput th,
+.tableInput td{
+  border:1px solid #ddd;
+  padding:8px;
+}
 
-    .sectionTitle{
-      margin-top:18px;
-      font-weight:1000;
-      letter-spacing:.2px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .sectionTitle small{color:var(--muted);font-weight:600}
+.tableInput th{
+  background:#f59e0b;
+  color:#000;
+  font-weight:900;
+}
 
-    .addonRow{
-      display:grid;
-      grid-template-columns:1.4fr .6fr 1fr auto;
-      gap:10px;
-      align-items:center;
-      margin-top:10px;
-      padding:10px;
-      border:1px dashed #cbd5e1;
-      border-radius:14px;
-      background:#fbfdff;
-    }
-    .addonRow input{margin-top:0}
-    .miniBtn{
-      border:0;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:900;
-      cursor:pointer;
-      background:#ef4444;
-      color:#fff;
-      white-space:nowrap;
-    }
+.addItem{
+  background:#111827;
+  margin-bottom:15px;
+}
 
-    .btnRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-    .btn{
-      border:0;border-radius:14px;
-      padding:14px 14px;
-      font-weight:1000;
-      cursor:pointer;
-      font-size:16px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btnAdd{
-      background:#e5e7eb;
-      color:#111827;
-    }
-    .btnGen{
-      background:linear-gradient(90deg,var(--btn1),var(--btn2));
-      color:#fff;
-    }
+/* PRINT */
 
-    .hint{margin-top:10px;color:var(--muted);font-size:12.5px;line-height:1.35}
+@media print{
+  body{background:#fff}
+  .card{box-shadow:none}
+  #formArea{display:none}
+}
 
-    @media (max-width:720px){
-      .grid2,.grid3{grid-template-columns:1fr}
-      .btnRow{grid-template-columns:1fr}
-      .addonRow{grid-template-columns:1fr 1fr 1fr auto}
-    }
-    @media (max-width:520px){
-      .addonRow{grid-template-columns:1fr 1fr; }
-      .addonRow .miniBtn{grid-column:1 / -1}
-    }
+.invHeader{
+  background:#111827;
+  color:#fff;
+  padding:15px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
 
-    /* ====== PRINT ====== */
-    #printArea{display:none}
-    @media print{
-      body{background:#fff;padding:0}
-      .card{border:0;box-shadow:none;border-radius:0}
-      #formArea{display:none !important}
-      #printArea{display:block !important}
-    }
+.logo{
+  width:70px;
+  height:70px;
+  border-radius:12px;
+  object-fit:cover;
+}
 
-    /* invoice layout */
-    .invHeader{
-      background:var(--head);
-      color:#fff;
-      padding:18px 18px 16px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .logoBox{
-      width:64px;height:64px;border-radius:999px;overflow:hidden;
-      border:2px solid rgba(255,255,255,.16);
-      background:#0b1220;
-      flex:0 0 auto;
-    }
-    .logoBox img{width:100%;height:100%;object-fit:cover}
-    .invTitle{flex:1;min-width:0}
-    .invTitle .brand{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.8px;
-      font-weight:1000;
-      color:var(--accent);
-      line-height:1.1;
-    }
-    .invTitle .addr{
-      margin:8px 0 0;
-      color:#ffffff;          /* lebih hitam/kontras (di header hitam = putih tegas) */
-      font-weight:800;        /* tebal */
-      font-size:13px;
-      line-height:1.35;
-      opacity:.92;
-    }
+.brand{
+  font-size:20px;
+  font-weight:900;
+  color:#f59e0b;
+}
 
-    .invBody{padding:18px}
+.address{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+  margin-top:5px;
+}
 
-    .metaGrid{
-      display:grid;
-      grid-template-columns:1.2fr 1fr;
-      gap:10px;
-      align-items:start;
-    }
-    .metaBox{
-      font-size:13px;
-      line-height:1.6;
-    }
-    .metaBox b{font-weight:1000}
-    .fact{
-      font-weight:1000;
-      font-size:16px;
-      margin:0 0 6px;
-    }
+.invTable{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
 
-    /* Stamp */
-    .stampWrap{position:relative;min-height:90px}
-    .stamp{
-      position:absolute;
-      right:8px;
-      top:6px;
-      transform:rotate(-12deg);
-      font-weight:1000;
-      letter-spacing:4px;
-      font-size:48px;
-      opacity:.33;
-      border:7px solid;
-      padding:10px 18px;
-      border-radius:10px;
-      display:none;
-      user-select:none;
-      pointer-events:none;
-    }
-    .stamp.lunas{color:var(--ok);border-color:var(--ok)}
-    .stamp.belum{color:var(--bad);border-color:var(--bad)}
-    .stamp.on{display:inline-block}
-    @media (max-width:640px){
-      .metaGrid{grid-template-columns:1fr}
-      .stamp{font-size:38px;right:0}
-    }
+.invTable th{
+  background:#f59e0b;
+  border:2px solid #d97706;
+  padding:10px;
+}
 
-    table.invTable{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:14px;
-      font-size:13px;
-    }
-    table.invTable th{
-      background:linear-gradient(180deg,var(--accent),var(--accent2));
-      color:#111827;
-      text-align:left;
-      padding:10px 10px;
-      border:2px solid #d97706;
-      font-weight:1000;
-    }
-    table.invTable td{
-      border:2px solid #d1d5db;
-      padding:10px 10px;
-      vertical-align:top;
-    }
-    .num{text-align:right;white-space:nowrap}
-    .center{text-align:center}
+.invTable td{
+  border:2px solid #ddd;
+  padding:10px;
+}
 
-    table.totals{
-      width:min(460px,100%);
-      margin-left:auto;
-      margin-top:12px;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-    table.totals td{
-      border:2px solid #d1d5db;
-      padding:10px 10px;
-      font-weight:900;
-    }
-    table.totals td.lbl{
-      background:#f3f4f6;
-      text-align:right;
-      color:#111827;
-      width:55%;
-    }
-    table.totals tr.kek td{
-      background:#fff7cc;
-      font-weight:1000;
-      font-size:14px;
-    }
+.totals{
+  width:350px;
+  margin-left:auto;
+  margin-top:10px;
+  border-collapse:collapse;
+}
 
-    .notePrint{
-      margin-top:12px;
-      color:#334155;
-      font-size:12.8px;
-      white-space:pre-line;
-      line-height:1.45;
-    }
-  </style>
+.totals td{
+  border:2px solid #ddd;
+  padding:10px;
+  font-weight:900;
+}
+
+.kek{
+  background:#fff7cc;
+}
+
+.stamp{
+  font-size:40px;
+  font-weight:900;
+  opacity:.25;
+  transform:rotate(-15deg);
+  position:absolute;
+  right:40px;
+  top:150px;
+  display:none;
+}
+
+.lunas{color:green}
+.belum{color:red}
+
+</style>
 </head>
-
 <body>
-<div class="shell">
-  <div class="card">
 
-    <!-- ===================== FORM ===================== -->
-    <div id="formArea">
-      <div class="formTop">
-        <div>
-          <h1>Invoice Admin — Mahesa VW</h1>
-          <div class="sub">Isi data → <b>Generate PDF</b>. Data otomatis masuk Google Sheet.</div>
-        </div>
-        <div class="pill" id="pillStatus">STATUS: TANPA</div>
-      </div>
+<div class="card" id="formArea">
 
-      <div class="formBody">
-        <label>Upload Logo (opsional)</label>
-        <input type="file" id="logoInput" accept="image/*" />
+<h2>Generate Invoice</h2>
 
-        <div class="grid2">
-          <div>
-            <label>Nama Customer</label>
-            <input id="custName" placeholder="Contoh: Nisa Inlingua" />
-          </div>
-          <div>
-            <label>No HP</label>
-            <input id="custHp" placeholder="08xxxxxxxxxx" />
-          </div>
-        </div>
+<label>Logo</label>
+<input type="file" id="logoInput">
 
-        <div class="grid2">
-          <div>
-            <label>Tanggal Tour</label>
-            <input type="date" id="tourDate" />
-          </div>
-          <div>
-            <label>Status (Stamp)</label>
-            <select id="stampMode">
-              <option value="none">Tanpa Tampilan</option>
-              <option value="lunas">LUNAS</option>
-              <option value="belum">BELUM LUNAS</option>
-            </select>
-          </div>
-        </div>
+<label>Nomor Faktur</label>
+<input type="text" id="inv">
 
-        <label>Pilih Paket VW</label>
-        <select id="paket">
-          <option value="350000|Paket Short (2 Jam)">Paket Short (2 Jam)</option>
-          <option value="550000|Paket Medium (3 Jam)">Paket Medium (3 Jam)</option>
-          <option value="700000|Paket Long (4 Jam)">Paket Long (4 Jam)</option>
-          <option value="0|Custom">Custom</option>
-        </select>
+<label>Tanggal Tour</label>
+<input type="date" id="tanggal">
 
-        <div class="grid3">
-          <div>
-            <label>Nama Paket (editable)</label>
-            <input id="mainName" placeholder="Nama paket" />
-          </div>
-          <div>
-            <label>Jumlah Unit</label>
-            <input type="number" id="qty" value="1" min="1" />
-          </div>
-          <div>
-            <label>Harga / Unit</label>
-            <input type="number" id="priceMain" value="350000" min="0" />
-          </div>
-        </div>
+<label>Nama Customer</label>
+<input type="text" id="nama">
 
-        <div class="grid2">
-          <div>
-            <label>DP (Nominal Pembayaran)</label>
-            <input type="number" id="dp" value="0" min="0" />
-          </div>
-          <div>
-            <label>Catatan (opsional)</label>
-            <textarea id="note" placeholder="Contoh: meeting point / jam start / permintaan khusus."></textarea>
-          </div>
-        </div>
+<label>No HP</label>
+<input type="text" id="hp">
 
-        <div class="sectionTitle">
-          <div>Addons</div>
-          <small>Nama + Qty + Harga</small>
-        </div>
+<table class="tableInput">
+<thead>
+<tr>
+<th>Item</th>
+<th>Qty</th>
+<th>Harga</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="items">
+<tr>
+<td><input></td>
+<td><input type="number" value="1"></td>
+<td><input type="number"></td>
+<td class="totalCell">0</td>
+</tr>
+</tbody>
+</table>
 
-        <div id="addonsArea"></div>
+<button class="addItem" onclick="addRow()">+ Tambah Item</button>
 
-        <div class="btnRow">
-          <button class="btn btnAdd" type="button" onclick="addAddon()">+ Tambah Addon</button>
-          <button class="btn btnGen" type="button" onclick="generate()">Generate PDF</button>
-        </div>
+<label>DP</label>
+<input type="number" id="dp" value="0">
 
-        <div class="hint">
-          Di iPhone: setelah muncul Print Preview → Share → Save to Files. <br>
-          Nomor invoice otomatis mulai <b>32244</b> dan meneruskan angka.
-        </div>
-      </div>
-    </div>
+<label>Status Stamp</label>
+<select id="status">
+<option value="none">Tanpa Tampilan</option>
+<option value="lunas">LUNAS</option>
+<option value="belum">BELUM LUNAS</option>
+</select>
 
-    <!-- ===================== PRINT ===================== -->
-    <div id="printArea">
-      <div class="invHeader">
-        <div class="logoBox"><img id="pLogo" alt="Logo"/></div>
-        <div class="invTitle">
-          <div class="brand">MAHESA VW BOROBUDUR</div>
-          <div class="addr" id="pAddr">
-            Jl. Medang Kamulan, Dusun XIII, Borobudur, Kec. Borobudur, Magelang, Jawa Tengah
-            • Telp/WA: 0823-5505-7022
-          </div>
-        </div>
-      </div>
+<br><br>
+<button onclick="generate()">Generate & Print</button>
 
-      <div class="invBody">
-        <div class="metaGrid">
-          <div class="metaBox">
-            <div class="fact">FAKTUR #: <span id="pInv">-</span></div>
-            <div><b>Tanggal Tour:</b> <span id="pTourDate">-</span></div>
-            <div><b>Nama Customer:</b> <span id="pCust">-</span></div>
-            <div><b>No HP:</b> <span id="pHp">-</span></div>
-          </div>
+</div>
 
-          <div class="stampWrap">
-            <span class="stamp lunas" id="stampLunas">LUNAS</span>
-            <span class="stamp belum" id="stampBelum">BELUM</span>
-          </div>
-        </div>
+<div id="printArea" style="display:none; position:relative;">
 
-        <table class="invTable">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th class="center">Qty</th>
-              <th class="num">Harga</th>
-              <th class="num">Total</th>
-            </tr>
-          </thead>
-          <tbody id="pRows"></tbody>
-        </table>
+<div class="invHeader">
+<img id="pLogo" class="logo">
+<div>
+<div class="brand">MAHESA VW BOROBUDUR</div>
+<div class="address">
+Jl. Medang Kamulan, Dusun XIII, Borobudur, Magelang, Jawa Tengah • WA: 0823-5505-7022
+</div>
+</div>
+</div>
 
-        <table class="totals">
-          <tr>
-            <td class="lbl">Subtotal</td>
-            <td class="num" id="pSub">Rp 0</td>
-          </tr>
-          <tr>
-            <td class="lbl">DP</td>
-            <td class="num" id="pDP">-Rp 0</td>
-          </tr>
-          <tr class="kek">
-            <td class="lbl">Kekurangan</td>
-            <td class="num" id="pBal">Rp 0</td>
-          </tr>
-        </table>
+<br>
 
-        <div class="notePrint" id="pNote"></div>
-      </div>
-    </div>
+<b>FAKTUR #:</b> <span id="pInv"></span><br>
+<b>Tanggal:</b> <span id="pTanggal"></span><br>
+<b>Nama:</b> <span id="pNama"></span><br>
+<b>No HP:</b> <span id="pHp"></span><br>
 
-  </div>
+<div class="stamp lunas" id="stampLunas">LUNAS</div>
+<div class="stamp belum" id="stampBelum">BELUM</div>
+
+<table class="invTable">
+<thead>
+<tr>
+<th>Item</th>
+<th>Qty</th>
+<th>Harga</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="pItems"></tbody>
+</table>
+
+<table class="totals">
+<tr><td>Subtotal</td><td id="pSub"></td></tr>
+<tr><td>DP</td><td id="pDP"></td></tr>
+<tr class="kek"><td>Kekurangan</td><td id="pSisa"></td></tr>
+</table>
+
 </div>
 
 <script>
-/* ========= CONFIG ========= */
-const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwMZa4ptlGBqzk1wiIKQDEDlA2kID915z6Vaxt37tkjEZSRwq5XMNrC-rS8o_0UX8Sr/exec";
-const KEY_INV = "mahesa_inv_no_v3";
-const START_INV = 32244;
-const KEY_LOGO = "mahesa_logo_v3";
 
-/* ========= HELPERS ========= */
-const $ = (id)=>document.getElementById(id);
-const rupiah = (n)=>"Rp "+Number(n||0).toLocaleString("id-ID");
-const esc = (s)=>String(s||"")
-  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-
-function fmtDateISOToID(iso){
-  if(!iso) return "";
-  const [y,m,d] = iso.split("-");
-  return `${d}/${m}/${y}`;
-}
-function nextNo(){
-  const v = localStorage.getItem(KEY_INV);
-  const next = v ? (Number(v)+1) : START_INV;
-  localStorage.setItem(KEY_INV, String(next));
-  return String(next);
+function addRow(){
+let row = `
+<tr>
+<td><input></td>
+<td><input type="number" value="1"></td>
+<td><input type="number"></td>
+<td class="totalCell">0</td>
+</tr>`;
+document.getElementById("items").insertAdjacentHTML("beforeend", row);
 }
 
-/* ========= LOGO ========= */
-$("logoInput").addEventListener("change", ()=>{
-  const f = $("logoInput").files && $("logoInput").files[0];
-  if(!f) return;
-  const r = new FileReader();
-  r.onload = (e)=>{
-    localStorage.setItem(KEY_LOGO, e.target.result);
-  };
-  r.readAsDataURL(f);
-});
-function loadLogoToPrint(){
-  const data = localStorage.getItem(KEY_LOGO);
-  if(data) $("pLogo").src = data;
-  else {
-    // fallback logo
-    $("pLogo").src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%23f59e0b'/%3E%3Ctext x='50%25' y='54%25' font-family='Arial' font-size='18' font-weight='900' text-anchor='middle' fill='%23111827'%3EMVW%3C/text%3E%3C/svg%3E";
-  }
+function formatRupiah(n){
+return "Rp " + n.toLocaleString("id-ID");
 }
 
-/* ========= PAKET SYNC ========= */
-function syncPaket(){
-  const [price, name] = $("paket").value.split("|");
-  if(name === "Custom"){
-    $("mainName").value = "";
-    $("priceMain").value = "";
-    $("mainName").focus();
-  } else {
-    $("mainName").value = name;
-    $("priceMain").value = Number(price||0);
-  }
-}
-$("paket").addEventListener("change", syncPaket);
-
-/* ========= STATUS PILL ========= */
-function updatePill(){
-  const m = $("stampMode").value;
-  const text = (m==="lunas") ? "LUNAS" : (m==="belum") ? "BELUM LUNAS" : "TANPA";
-  $("pillStatus").textContent = "STATUS: " + text;
-  $("pillStatus").style.background = (m==="lunas") ? "#16a34a" : (m==="belum") ? "#ef4444" : "#111827";
-}
-$("stampMode").addEventListener("change", updatePill);
-
-/* ========= ADDONS ========= */
-function addAddon(name="", qty="1", price="0"){
-  const row = document.createElement("div");
-  row.className = "addonRow";
-  row.innerHTML = `
-    <div>
-      <input class="an" placeholder="Nama Addon" value="${esc(name)}">
-    </div>
-    <div>
-      <input class="aq" type="number" min="0" inputmode="numeric" placeholder="Qty" value="${esc(qty)}">
-    </div>
-    <div>
-      <input class="ap" type="number" min="0" inputmode="numeric" placeholder="Harga" value="${esc(price)}">
-    </div>
-    <div>
-      <button class="miniBtn" type="button">Hapus</button>
-    </div>
-  `;
-  row.querySelector("button").addEventListener("click", ()=>row.remove());
-  $("addonsArea").appendChild(row);
-}
-window.addAddon = addAddon;
-
-/* ========= GENERATE ========= */
 function generate(){
-  const no = nextNo();
 
-  const tourISO = $("tourDate").value;
-  const tourDate = fmtDateISOToID(tourISO);
+let subtotal = 0;
+let rows = document.querySelectorAll("#items tr");
+let output = "";
 
-  const nama = ($("custName").value||"").trim();
-  const hp = ($("custHp").value||"").trim();
+rows.forEach(r=>{
+let item = r.children[0].querySelector("input").value;
+let qty = Number(r.children[1].querySelector("input").value);
+let harga = Number(r.children[2].querySelector("input").value);
+let total = qty * harga;
+subtotal += total;
 
-  const paketName = ($("mainName").value||"").trim();
-  const qtyMain = Number($("qty").value||0);
-  const priceMain = Number($("priceMain").value||0);
+output += `<tr>
+<td>${item}</td>
+<td>${qty}</td>
+<td>${formatRupiah(harga)}</td>
+<td>${formatRupiah(total)}</td>
+</tr>`;
+});
 
-  const dp = Number($("dp").value||0);
-  const mode = $("stampMode").value;
-  const status = (mode==="lunas") ? "LUNAS" : (mode==="belum") ? "BELUM LUNAS" : "TANPA";
+let dp = Number(document.getElementById("dp").value);
+let sisa = subtotal - dp;
 
-  if(!tourISO){
-    alert("Tanggal tour wajib diisi.");
-    return;
-  }
-  if(!paketName){
-    alert("Nama paket kosong. Pilih paket atau isi manual (Custom).");
-    return;
-  }
-  if(!(qtyMain>0)){
-    alert("Jumlah unit minimal 1.");
-    return;
-  }
+document.getElementById("pItems").innerHTML = output;
+document.getElementById("pSub").innerText = formatRupiah(subtotal);
+document.getElementById("pDP").innerText = "- " + formatRupiah(dp);
+document.getElementById("pSisa").innerText = formatRupiah(sisa);
 
-  // build rows
-  const rows = [];
-  rows.push({name: paketName, qty: qtyMain, price: priceMain});
+document.getElementById("pInv").innerText = document.getElementById("inv").value;
+document.getElementById("pTanggal").innerText = document.getElementById("tanggal").value;
+document.getElementById("pNama").innerText = document.getElementById("nama").value;
+document.getElementById("pHp").innerText = document.getElementById("hp").value;
 
-  document.querySelectorAll("#addonsArea .addonRow").forEach(r=>{
-    const n = (r.querySelector(".an").value||"").trim();
-    const q = Number(r.querySelector(".aq").value||0);
-    const p = Number(r.querySelector(".ap").value||0);
-    if(n && q>0) rows.push({name:n, qty:q, price:p});
-  });
+let status = document.getElementById("status").value;
+document.getElementById("stampLunas").style.display = "none";
+document.getElementById("stampBelum").style.display = "none";
 
-  let subtotal = 0;
-  rows.forEach(it => subtotal += (Number(it.qty)||0)*(Number(it.price)||0));
-  const sisa = Math.max(subtotal - dp, 0);
-
-  // send to Google Sheet (non-blocking)
-  fetch(SHEET_API_URL, {
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify({
-      no: no,
-      tanggal: tourDate,
-      nama: nama,
-      hp: hp,
-      paket: paketName,
-      jumlah: qtyMain,
-      total: subtotal,
-      dp: dp,
-      sisa: sisa,
-      status: status
-    })
-  }).catch(()=>{});
-
-  // fill print
-  $("pInv").textContent = no;
-  $("pTourDate").textContent = tourDate;
-  $("pCust").textContent = nama || "-";
-  $("pHp").textContent = hp || "-";
-
-  loadLogoToPrint();
-
-  // stamp
-  $("stampLunas").classList.remove("on");
-  $("stampBelum").classList.remove("on");
-  if(mode==="lunas") $("stampLunas").classList.add("on");
-  if(mode==="belum") $("stampBelum").classList.add("on");
-
-  // table rows
-  const tb = $("pRows");
-  tb.innerHTML = "";
-  rows.forEach(it=>{
-    const t = (Number(it.qty)||0)*(Number(it.price)||0);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${esc(it.name)}</td>
-      <td class="center">${Number(it.qty||0)}</td>
-      <td class="num">${rupiah(it.price)}</td>
-      <td class="num">${rupiah(t)}</td>
-    `;
-    tb.appendChild(tr);
-  });
-
-  $("pSub").textContent = rupiah(subtotal);
-  $("pDP").textContent  = "-"+rupiah(dp);
-  $("pBal").textContent = rupiah(sisa);
-
-  const note = ($("note").value||"").trim();
-  $("pNote").textContent = note ? ("Catatan: "+note) : "";
-
-  window.print();
+if(status === "lunas"){
+document.getElementById("stampLunas").style.display = "block";
 }
-window.generate = generate;
+if(status === "belum"){
+document.getElementById("stampBelum").style.display = "block";
+}
 
-/* ========= INIT ========= */
-(function init(){
-  // default date today
-  const iso = new Date().toISOString().slice(0,10);
-  $("tourDate").value = iso;
+let file = document.getElementById("logoInput").files[0];
+if(file){
+let reader = new FileReader();
+reader.onload = function(e){
+document.getElementById("pLogo").src = e.target.result;
+};
+reader.readAsDataURL(file);
+}
 
-  syncPaket();
-  updatePill();
+document.getElementById("formArea").style.display="none";
+document.getElementById("printArea").style.display="block";
 
-  // 1 addon sample? (biar kosong dulu)
-  // addAddon("Dokumentasi", "1", "50000");
-})();
+window.print();
+}
+
 </script>
+
 </body>
 </html>

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Invoice VW - Mobile (Fix)</title>
+  <style>
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+      background:#f2f4f8;
+      margin:0;
+      padding:18px;
+      color:#111;
+      -webkit-text-size-adjust:100%;
+    }
+    .container{
+      max-width:640px;
+      margin:auto;
+      background:#fff;
+      padding:18px;
+      border-radius:16px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    }
+    h2{color:#2563eb;margin:0 0 12px}
+    label{font-weight:800;margin-top:14px;display:block}
+    input,select,textarea{
+      width:100%;
+      padding:12px;
+      margin-top:6px;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      font-size:16px;
+      outline:none;
+      background:#fff;
+    }
+    textarea{min-height:90px;resize:vertical}
+
+    .addon-row{
+      display:grid;
+      grid-template-columns: 1.4fr .7fr 1fr auto;
+      gap:10px;
+      align-items:center;
+      margin-top:10px;
+    }
+    .addon-row input{margin-top:0}
+    .btn{
+      padding:11px 14px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:14px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .btn-add{background:#e5e7eb;margin-top:10px}
+    .btn-del{background:#ef4444;color:#fff;white-space:nowrap}
+    .btn-generate{
+      margin-top:18px;
+      width:100%;
+      padding:14px;
+      font-size:18px;
+      background:linear-gradient(90deg,#22c55e,#2563eb);
+      color:#fff;
+    }
+    .muted{color:#6b7280;font-size:13px;line-height:1.35;margin-top:10px}
+
+    /* Print area */
+    #invoicePreview{display:none}
+    .inv-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+    .inv-company h1{margin:0 0 4px;font-size:18px}
+    .inv-company .sub{font-size:12.5px;color:#6b7280;white-space:pre-line;line-height:1.35}
+    .inv-meta{text-align:right;min-width:160px}
+    .inv-meta .k{font-size:12px;color:#6b7280}
+    .inv-meta .v{font-size:14px;font-weight:900;margin:2px 0 8px}
+    .rule{height:1px;background:#e5e7eb;margin:10px 0 12px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #e5e7eb;padding:10px 8px;font-size:13px;vertical-align:top}
+    th{background:#f9fafb;color:#6b7280;font-size:12px;text-align:left}
+    td.num,th.num{text-align:right;white-space:nowrap}
+    .totals{margin-top:10px;display:flex;justify-content:flex-end}
+    .totals table{width:320px}
+    .totals td{border:0;padding:6px 0}
+    .totals td:first-child{text-align:right;color:#6b7280;padding-right:14px}
+    .totals .grand td{border-top:1px solid #e5e7eb;padding-top:10px;font-size:14px;font-weight:900;color:#111}
+    .inv-note{margin-top:10px;font-size:12.5px;color:#6b7280;white-space:pre-line;line-height:1.45}
+    .inv-pay{margin-top:10px;border:1px solid #e5e7eb;border-radius:12px;padding:10px;background:#fcfcfc;font-size:13px;white-space:pre-line;line-height:1.45}
+
+    @media print{
+      body{background:#fff;padding:0}
+      .container{box-shadow:none;border-radius:0}
+      #formView{display:none !important}
+      #invoicePreview{display:block !important}
+      /* hide inputs inside print area if any */
+      input,select,textarea,button{display:none !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- FORM VIEW -->
+    <div id="formView">
+      <h2>Buat Invoice Baru</h2>
+
+      <label>Nama Customer</label>
+      <input id="nama" placeholder="Contoh: Nisa Inlingua" />
+
+      <label>Nomor HP Customer</label>
+      <input id="hp" placeholder="08xxxxxxxxxx" inputmode="numeric" />
+
+      <label>Pilih Paket</label>
+      <select id="paket" onchange="syncHargaFromPaket()">
+        <option value="350000">Paket Short VW Borobudur</option>
+        <option value="550000">Paket Medium VW Borobudur</option>
+        <option value="700000">Paket Long VW Borobudur</option>
+      </select>
+
+      <label>Harga Paket (Rp)</label>
+      <input id="harga" type="number" inputmode="numeric" />
+
+      <label>Jumlah Unit Paket</label>
+      <input id="unit" type="number" value="1" min="1" inputmode="numeric" />
+
+      <label>DP (Rp)</label>
+      <input id="dp" type="number" value="0" min="0" inputmode="numeric" />
+
+      <label>Addons</label>
+      <div id="addons"></div>
+
+      <!-- IMPORTANT: use inline onclick + also touchstart binding -->
+      <button class="btn btn-add" type="button" id="btnAddAddon" onclick="tambahAddon()">Tambah Addon</button>
+
+      <label>Catatan</label>
+      <textarea id="catatan" placeholder="Contoh: Sudah termasuk driver & BBM."></textarea>
+
+      <button class="btn btn-generate" type="button" id="btnGenerate" onclick="buildAndPrint()">Generate PDF</button>
+
+      <div class="muted">
+        Setelah klik <b>Generate PDF</b> → preview print → <b>Share</b> → <b>Save to Files</b>.
+      </div>
+    </div>
+
+    <!-- INVOICE PREVIEW (PRINT AREA) -->
+    <div id="invoicePreview">
+      <div class="inv-header">
+        <div class="inv-company">
+          <h1>MAHESA VW BOROBUDUR</h1>
+          <div class="sub">Jl. Medang Kamulan, Borobudur, Magelang
+Telp/WA: 0823-5505-7022</div>
+        </div>
+        <div class="inv-meta">
+          <div class="k">INVOICE</div>
+          <div class="v" id="pInvNo">-</div>
+          <div class="k">Tanggal</div>
+          <div class="v" id="pDate">-</div>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div style="font-size:13px;line-height:1.4">
+        <b>Customer:</b> <span id="pCust">-</span><br>
+        <span style="color:#6b7280">HP:</span> <span id="pPhone">-</span>
+      </div>
+
+      <table style="margin-top:10px">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th class="num">Qty</th>
+            <th class="num">Harga</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody id="pItems"></tbody>
+      </table>
+
+      <div class="totals">
+        <table>
+          <tr><td>Subtotal</td><td class="num" id="pSubtotal">Rp 0</td></tr>
+          <tr><td>DP</td><td class="num" id="pDP">-Rp 0</td></tr>
+          <tr class="grand"><td>Sisa / Kekurangan</td><td class="num" id="pBalance">Rp 0</td></tr>
+        </table>
+      </div>
+
+      <div class="inv-pay">Pembayaran ke:
+Bank Mandiri
+A/N: Dani Ariwibowo
+No. Rek: 136-001-339-280-5</div>
+
+      <div class="inv-note" id="pNote"></div>
+    </div>
+
+  </div>
+
+<script>
+  const rupiah = (n) => "Rp " + (Number(n||0)).toLocaleString("id-ID");
+  const el = (id) => document.getElementById(id);
+
+  function syncHargaFromPaket(){
+    el("harga").value = Number(el("paket").value || 0);
+  }
+
+  function tambahAddon(nama="", qty="", harga=""){
+    const wrap = document.createElement("div");
+    wrap.className = "addon-row";
+    wrap.innerHTML = `
+      <input class="aName" placeholder="Nama Addon" value="${nama}">
+      <input class="aQty" type="number" min="0" inputmode="numeric" placeholder="Qty" value="${qty}">
+      <input class="aPrice" type="number" min="0" inputmode="numeric" placeholder="Harga" value="${harga}">
+      <button class="btn btn-del" type="button">Hapus</button>
+    `;
+    wrap.querySelector("button").addEventListener("click", () => wrap.remove());
+    el("addons").appendChild(wrap);
+  }
+
+  // Also bind touchstart for iOS quirks
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = el("btnAddAddon");
+    btn.addEventListener("touchstart", (e) => { e.preventDefault(); tambahAddon(); }, {passive:false});
+
+    const gen = el("btnGenerate");
+    gen.addEventListener("touchstart", (e) => { e.preventDefault(); buildAndPrint(); }, {passive:false});
+  });
+
+  // Invoice number (stored)
+  const START_NO = 32244;
+  const LS_KEY = "invoice_no_simple_v2";
+
+  function nextInvoiceNo(){
+    let last = localStorage.getItem(LS_KEY);
+    let next = last ? (Number(last)+1) : START_NO;
+    localStorage.setItem(LS_KEY, String(next));
+    return String(next);
+  }
+
+  function escapeHtml(str){
+    return String(str||"")
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function buildAndPrint(){
+    const invoiceNo = nextInvoiceNo();
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2,"0");
+    const mm = String(today.getMonth()+1).padStart(2,"0");
+    const yyyy = today.getFullYear();
+    const dateStr = `${dd}/${mm}/${yyyy}`;
+
+    const customer = el("nama").value.trim() || "-";
+    const phone = el("hp").value.trim() || "-";
+
+    const paketName = el("paket").options[el("paket").selectedIndex].text;
+    const unit = Number(el("unit").value || 0);
+    const harga = Number(el("harga").value || 0);
+    const dp = Number(el("dp").value || 0);
+    const note = el("catatan").value.trim();
+
+    const items = [];
+    items.push({name: paketName, qty: unit, price: harga});
+
+    document.querySelectorAll("#addons .addon-row").forEach(r => {
+      const n = r.querySelector(".aName").value.trim();
+      const q = Number(r.querySelector(".aQty").value || 0);
+      const p = Number(r.querySelector(".aPrice").value || 0);
+      if(n){
+        items.push({name: n, qty: q, price: p});
+      }
+    });
+
+    const tbody = el("pItems");
+    tbody.innerHTML = "";
+    let subtotal = 0;
+
+    items.forEach(it => {
+      const total = (Number(it.qty)||0) * (Number(it.price)||0);
+      subtotal += total;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escapeHtml(it.name)}</td>
+        <td class="num">${Number(it.qty||0)}</td>
+        <td class="num">${rupiah(it.price)}</td>
+        <td class="num">${rupiah(total)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const balance = Math.max(subtotal - dp, 0);
+
+    el("pInvNo").textContent = invoiceNo;
+    el("pDate").textContent = dateStr;
+    el("pCust").textContent = customer;
+    el("pPhone").textContent = phone;
+
+    el("pSubtotal").textContent = rupiah(subtotal);
+    el("pDP").textContent = "-"+rupiah(dp);
+    el("pBalance").textContent = rupiah(balance);
+
+    el("pNote").textContent = note ? ("Catatan: " + note) : "";
+
+    window.print();
+  }
+
+  // init
+  syncHargaFromPaket();
+</script>
+</body>
+</html>

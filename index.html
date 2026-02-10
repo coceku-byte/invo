@@ -29,11 +29,10 @@
       background:var(--bg);
       color:var(--ink);
     }
-
     .shell{max-width:980px;margin:0 auto;}
     .card{
       background:var(--card);
-      border:1px solid rgba(226,232,240,.9);
+      border:1px solid rgba(226,232,240,.95);
       border-radius:18px;
       box-shadow:0 18px 45px rgba(2,6,23,.10);
       overflow:hidden;
@@ -47,11 +46,10 @@
       align-items:flex-start;
       justify-content:space-between;
       gap:12px;
-      background:linear-gradient(180deg, #ffffff, #fbfbfd);
+      background:linear-gradient(180deg,#ffffff,#fbfbfd);
     }
     .formTop h1{margin:0;font-size:20px;letter-spacing:.2px}
     .formTop .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35}
-
     .pill{
       display:inline-flex;
       align-items:center;
@@ -138,7 +136,7 @@
       .addonRow{grid-template-columns:1fr 1fr 1fr auto}
     }
     @media (max-width:520px){
-      .addonRow{grid-template-columns:1fr 1fr; }
+      .addonRow{grid-template-columns:1fr 1fr}
       .addonRow .miniBtn{grid-column:1 / -1}
     }
 
@@ -247,9 +245,10 @@
     .num{text-align:right;white-space:nowrap}
     .center{text-align:center}
 
+    /* totals PRESISI sejajar kolom Harga+Total (21% + 21% = 42%) */
     table.totals{
-      width:360px;
-      margin-left:auto;
+      width:42%;
+      margin-left:58%;
       margin-top:10px;
       border-collapse:collapse;
       font-size:12.8px;
@@ -289,7 +288,7 @@
       <div class="formTop">
         <div>
           <h1>Invoice Admin — Mahesa VW</h1>
-          <div class="sub">Isi data → <b>Generate PDF</b>. Data terkirim ke Google Sheet.</div>
+          <div class="sub">Isi data → <b>Generate PDF</b> (print). Semua fitur tetap lengkap.</div>
         </div>
         <div class="pill" id="pillStatus">STATUS: TANPA</div>
       </div>
@@ -324,7 +323,7 @@
           </div>
         </div>
 
-        <label>Pilih Paket VW</label>
+        <label>Pilih Paket VW (harga otomatis)</label>
         <select id="paket">
           <option value="400000|Paket Short (2 Jam)">Paket Short (2 Jam)</option>
           <option value="550000|Paket Medium (3 Jam)">Paket Medium (3 Jam)</option>
@@ -342,7 +341,7 @@
             <input type="number" id="qty" value="1" min="1" />
           </div>
           <div>
-            <label>Harga / Unit</label>
+            <label>Harga / Unit (bisa diedit)</label>
             <input type="number" id="priceMain" value="400000" min="0" />
           </div>
         </div>
@@ -354,7 +353,7 @@
           </div>
           <div>
             <label>Catatan (opsional)</label>
-            <textarea id="note" placeholder="Contoh: meeting point / jam start / permintaan khusus."></textarea>
+            <textarea id="note" placeholder="Contoh: Meeting point / jam start / permintaan khusus."></textarea>
           </div>
         </div>
 
@@ -366,12 +365,12 @@
         <div id="addonsArea"></div>
 
         <div class="btnRow">
-          <button class="btn btnAdd" type="button" onclick="addAddon()">+ Tambah Addon</button>
-          <button class="btn btnGen" type="button" onclick="generate()">Generate PDF</button>
+          <button class="btn btnAdd" type="button" id="btnAddAddon">+ Tambah Addon</button>
+          <button class="btn btnGen" type="button" id="btnGenerate">Generate PDF</button>
         </div>
 
         <div class="hint">
-          Nomor invoice otomatis mulai <b>32244</b> dan meneruskan angka (tersimpan di HP).<br>
+          Nomor invoice otomatis mulai <b>32244</b> dan meneruskan angka (tersimpan di browser).<br>
           iPhone: setelah Print Preview → Share → Save to Files.
         </div>
       </div>
@@ -440,10 +439,13 @@
 
 <script>
 /* ========= CONFIG ========= */
+/* kalau mau kirim ke Google Sheet, isi URL Apps Script kamu di sini */
 const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwMZa4ptlGBqzk1wiIKQDEDlA2kID915z6Vaxt37tkjEZSRwq5XMNrC-rS8o_0UX8Sr/exec";
-const KEY_INV = "mahesa_inv_no_final";
+/* kalau tidak mau kirim ke sheet, ubah jadi kosong:  const SHEET_API_URL = ""; */
+
+const KEY_INV = "mahesa_inv_no_full";
 const START_INV = 32244;
-const KEY_LOGO = "mahesa_logo_final";
+const KEY_LOGO = "mahesa_logo_full";
 
 /* ========= HELPERS ========= */
 const $ = (id)=>document.getElementById(id);
@@ -515,10 +517,12 @@ function addAddon(name="", qty="1", price="0"){
   row.querySelector("button").addEventListener("click", ()=>row.remove());
   $("addonsArea").appendChild(row);
 }
-window.addAddon = addAddon;
+
+/* tombol add addon */
+$("btnAddAddon").addEventListener("click", ()=>addAddon());
 
 /* ========= GENERATE ========= */
-function generate(){
+async function generate(){
   const no = nextNo();
 
   const tourISO = $("tourDate").value;
@@ -556,23 +560,25 @@ function generate(){
   items.forEach(it => subtotal += (Number(it.qty)||0)*(Number(it.price)||0));
   const sisa = Math.max(subtotal - dp, 0);
 
-  // Send summary to Google Sheet (non-blocking)
-  fetch(SHEET_API_URL, {
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify({
-      no: no,
-      tanggal: tourDate,
-      nama: nama,
-      hp: hp,
-      paket: paketName,
-      jumlah: qtyMain,
-      total: subtotal,
-      dp: dp,
-      sisa: sisa,
-      status: status
-    })
-  }).catch(()=>{});
+  // send to sheet (opsional)
+  if(SHEET_API_URL){
+    fetch(SHEET_API_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        no: no,
+        tanggal: tourDate,
+        nama: nama,
+        hp: hp,
+        paket: paketName,
+        jumlah: qtyMain,
+        total: subtotal,
+        dp: dp,
+        sisa: sisa,
+        status: status
+      })
+    }).catch(()=>{});
+  }
 
   // Fill print
   $("pInv").textContent = no;
@@ -610,18 +616,17 @@ function generate(){
 
   window.print();
 }
-window.generate = generate;
+$("btnGenerate").addEventListener("click", generate);
 
 /* ========= INIT ========= */
 (function init(){
-  // default today
   const iso = new Date().toISOString().slice(0,10);
   $("tourDate").value = iso;
 
   syncPaket();
   updatePill();
 
-  // default: kosong (kalau mau langsung ada 1 baris addon, buka komentar di bawah)
+  // kalau mau 1 baris addon default, buka baris ini:
   // addAddon("", "1", "0");
 })();
 </script>

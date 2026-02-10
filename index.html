@@ -1,315 +1,470 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Invoice Mahesa VW Borobudur</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Invoice — Mahesa VW Borobudur</title>
 
 <style>
-:root{
---bg:#f2f4f8;
---head:#2f2f2f;
---orange:#f59e0b;
---line:#d1d5db;
-}
+  :root{
+    --bg:#f2f4f8;
+    --card:#ffffff;
+    --head:#2f2f2f;
+    --orange:#f59e0b;
+    --line:#d1d5db;
+    --muted:#6b7280;
+    --btn1:#22c55e;
+    --btn2:#2563eb;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    padding:16px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+    background:var(--bg);
+    color:#111827;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.10);
+    overflow:hidden;
+  }
 
-body{
-margin:0;
-padding:16px;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-background:var(--bg);
-}
+  /* ====== FORM ====== */
+  #formArea{padding:16px}
+  h2{margin:0 0 10px}
+  .sub{margin:0 0 16px;color:var(--muted);font-size:13px}
 
-.card{
-max-width:900px;
-margin:auto;
-background:#fff;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,.1);
-overflow:hidden;
-}
+  label{display:block;margin-top:14px;font-weight:800}
+  input,select,textarea{
+    width:100%;
+    margin-top:6px;
+    padding:12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+  }
+  input:focus,select:focus,textarea:focus{border-color:#94a3b8}
+  textarea{min-height:90px;resize:vertical}
 
-/* FORM */
-#formArea{padding:16px}
-label{display:block;margin-top:14px;font-weight:800}
-input,select,textarea{
-width:100%;
-margin-top:6px;
-padding:12px;
-border:1px solid var(--line);
-border-radius:10px;
-font-size:15px;
-}
-textarea{min-height:80px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
 
-.btn{
-margin-top:14px;
-padding:14px;
-border:0;
-border-radius:12px;
-font-weight:900;
-cursor:pointer;
-}
-.btnPrimary{
-background:linear-gradient(90deg,#22c55e,#2563eb);
-color:#fff;
-}
+  .btn{
+    width:100%;
+    margin-top:16px;
+    padding:14px 16px;
+    border:0;
+    border-radius:12px;
+    font-weight:900;
+    cursor:pointer;
+    background:linear-gradient(90deg,var(--btn1),var(--btn2));
+    color:#fff;
+    font-size:16px;
+  }
 
-/* PRINT AREA */
-#printArea{display:none}
+  .hint{
+    margin-top:10px;
+    font-size:12px;
+    color:var(--muted);
+  }
 
-@media print{
-body{padding:0;background:#fff}
-#formArea{display:none}
-#printArea{display:block}
-.card{box-shadow:none;border-radius:0}
-}
+  /* ====== PRINT ====== */
+  #printArea{display:none}
 
-/* HEADER */
-.invHeader{
-background:var(--head);
-color:#fff;
-padding:16px;
-display:flex;
-align-items:center;
-gap:14px;
-}
-.logo{
-width:60px;
-height:60px;
-border-radius:999px;
-overflow:hidden;
-background:#000;
-}
-.logo img{width:100%;height:100%;object-fit:cover}
+  @media print{
+    body{padding:0;background:#fff}
+    #formArea{display:none}
+    #printArea{display:block}
+    .wrap{box-shadow:none;border-radius:0}
+  }
 
-.invTitle{
-flex:1;
-}
-.invTitle h1{
-margin:0;
-color:var(--orange);
-font-size:22px;
-letter-spacing:.5px;
-}
-.invTitle p{
-margin:4px 0 0;
-font-size:12px;
-color:#ddd;
-line-height:1.4;
-}
+  .invHeader{
+    background:var(--head);
+    color:#fff;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .logoBox{
+    width:62px;height:62px;border-radius:999px;overflow:hidden;
+    background:#111;
+    flex:0 0 auto;
+  }
+  .logoBox img{width:100%;height:100%;object-fit:cover}
+  .titleBox{flex:1}
+  .titleBox h1{
+    margin:0;
+    color:var(--orange);
+    font-size:22px;
+    letter-spacing:.4px;
+  }
+  .titleBox p{
+    margin:6px 0 0;
+    font-size:12px;
+    color:#ddd;
+    line-height:1.35;
+  }
 
-/* TABLE */
-.table{
-width:100%;
-border-collapse:collapse;
-margin-top:14px;
-font-size:13px;
-}
-.table th{
-background:var(--orange);
-border:2px solid #d97706;
-padding:10px;
-}
-.table td{
-border:2px solid var(--line);
-padding:10px;
-}
-.table td.num{text-align:right}
-.table td.center{text-align:center}
+  .pad{padding:18px}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:13px}
+  .meta div{line-height:1.4}
+  .meta b{display:inline-block;min-width:110px}
 
-.totals{
-width:420px;
-margin-left:auto;
-margin-top:10px;
-border-collapse:collapse;
-}
-.totals td{
-border:2px solid var(--line);
-padding:10px;
-font-weight:800;
-}
-.totals .kek td{
-background:#fff7cc;
-font-size:14px;
-}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:14px;
+    font-size:13px;
+  }
+  th{
+    background:var(--orange);
+    border:2px solid #d97706;
+    padding:10px;
+    text-align:center;
+  }
+  td{
+    border:2px solid var(--line);
+    padding:10px;
+  }
+  td.num{text-align:right}
+  td.center{text-align:center}
 
-/* STAMP */
-.stamp{
-position:relative;
-height:0;
-}
-.stamp span{
-position:absolute;
-right:50px;
-top:-30px;
-transform:rotate(-12deg);
-font-weight:900;
-font-size:46px;
-color:#ef4444;
-opacity:.35;
-border:6px solid #ef4444;
-padding:8px 16px;
-border-radius:8px;
-display:none;
-}
-.stamp .show{display:block}
+  .totals{
+    width:min(440px,100%);
+    margin-left:auto;
+    margin-top:12px;
+    border-collapse:collapse;
+  }
+  .totals td{
+    border:2px solid var(--line);
+    padding:10px;
+    font-weight:900;
+  }
+  .totals .kek td{background:#fff7cc;font-size:14px}
+
+  .pay{
+    margin-top:16px;
+    font-size:13px;
+    line-height:1.5;
+  }
+
+  .stamp span{
+    position:absolute;
+    right:48px;
+    top:180px;
+    transform:rotate(-12deg);
+    font-weight:900;
+    font-size:46px;
+    color:#ef4444;
+    opacity:.35;
+    border:6px solid #ef4444;
+    padding:8px 16px;
+    border-radius:8px;
+    display:none;
+    letter-spacing:1px;
+  }
+  .stamp .show{display:block}
 </style>
 </head>
 
 <body>
-<div class="card">
+<div class="wrap">
 
-<!-- ================= FORM ================= -->
-<div id="formArea">
-<h2>Invoice Generator</h2>
+  <!-- ===================== FORM ===================== -->
+  <div id="formArea">
+    <h2>Buat Invoice</h2>
+    <p class="sub">Isi data → klik <b>Generate PDF</b>. Data otomatis masuk Google Sheet.</p>
 
-<label>Upload Logo</label>
-<input type="file" id="logoInput" accept="image/*">
+    <label>Upload Logo (opsional)</label>
+    <input type="file" id="logoInput" accept="image/*" />
 
-<label>Nama Customer</label>
-<input id="custName">
+    <div class="grid2">
+      <div>
+        <label>Nama Customer</label>
+        <input id="custName" placeholder="Contoh: Nisa Inlingua" />
+      </div>
+      <div>
+        <label>No HP</label>
+        <input id="custHp" placeholder="08xxxxxxxxxx" />
+      </div>
+    </div>
 
-<label>No HP</label>
-<input id="custHp">
+    <div class="grid2">
+      <div>
+        <label>Tanggal Tour</label>
+        <input type="date" id="tourDate" />
+      </div>
+      <div>
+        <label>Status Pembayaran</label>
+        <select id="stampMode">
+          <option value="none">Tanpa Tampilan</option>
+          <option value="lunas">LUNAS</option>
+          <option value="belum">BELUM LUNAS</option>
+        </select>
+      </div>
+    </div>
 
-<label>Pilih Paket VW</label>
-<select id="paket">
-<option value="350000|Paket Short VW Borobudur">Paket Short (2 Jam)</option>
-<option value="550000|Paket Medium VW Borobudur">Paket Medium (3 Jam)</option>
-<option value="700000|Paket Long VW Borobudur">Paket Long (4 Jam)</option>
-<option value="0|Custom">Custom</option>
-</select>
+    <label>Pilih Paket VW</label>
+    <select id="paket" onchange="syncPaket()">
+      <option value="350000|Paket Short (2 Jam)">Paket Short (2 Jam)</option>
+      <option value="550000|Paket Medium (3 Jam)">Paket Medium (3 Jam)</option>
+      <option value="700000|Paket Long (4 Jam)">Paket Long (4 Jam)</option>
+      <option value="0|Custom">Custom</option>
+    </select>
 
-<label>Jumlah</label>
-<input type="number" id="qty" value="1">
+    <div class="grid2">
+      <div>
+        <label>Nama Paket</label>
+        <input id="mainName" placeholder="Nama paket akan terisi otomatis (atau isi sendiri jika Custom)" />
+      </div>
+      <div>
+        <label>Harga (per unit)</label>
+        <input type="number" id="priceMain" placeholder="0" />
+      </div>
+    </div>
 
-<label>Harga</label>
-<input type="number" id="price" value="350000">
+    <div class="grid2">
+      <div>
+        <label>Jumlah Unit</label>
+        <input type="number" id="qty" value="1" min="1" />
+      </div>
+      <div>
+        <label>DP (Nominal Pembayaran)</label>
+        <input type="number" id="dp" value="0" min="0" />
+      </div>
+    </div>
 
-<label>DP</label>
-<input type="number" id="dp" value="0">
+    <label>Catatan (opsional)</label>
+    <textarea id="note" placeholder="Contoh: Meeting point, jam start, dll."></textarea>
 
-<label>Status Stamp</label>
-<select id="stampMode">
-<option value="none">Tanpa Tampilan</option>
-<option value="lunas">LUNAS</option>
-<option value="belum">BELUM LUNAS</option>
-<option value="dp">DP</option>
-</select>
+    <button class="btn" onclick="generate()">Generate PDF</button>
+    <div class="hint">PDF muncul lewat menu Print. Di iPhone: Share → Save to Files.</div>
+  </div>
 
-<button class="btn btnPrimary" onclick="generate()">Generate PDF</button>
-</div>
+  <!-- ===================== PRINT ===================== -->
+  <div id="printArea">
+    <div class="invHeader">
+      <div class="logoBox"><img id="pLogo" alt="logo"/></div>
+      <div class="titleBox">
+        <h1>MAHESA VW BOROBUDUR</h1>
+        <p>
+          Jl. Medang Kamulan, Dusun XIII, Borobudur, Kec. Borobudur, Magelang, Jawa Tengah<br>
+          Telp: 0823-5505-7022
+        </p>
+      </div>
+    </div>
 
-<!-- ================= PRINT ================= -->
-<div id="printArea">
+    <div class="pad">
+      <div class="meta">
+        <div><b>FAKTUR #</b>: <span id="pInv"></span></div>
+        <div><b>Tanggal Tour</b>: <span id="pTourDate"></span></div>
+        <div><b>Nama</b>: <span id="pCust"></span></div>
+        <div><b>No HP</b>: <span id="pHp"></span></div>
+      </div>
 
-<div class="invHeader">
-<div class="logo"><img id="pLogo"></div>
-<div class="invTitle">
-<h1>MAHESA VW BOROBUDUR</h1>
-<p>Jl. Medang Kamulan, Borobudur, Magelang<br>
-Telp: 0823-5505-7022</p>
-</div>
-</div>
+      <div class="stamp">
+        <span id="sLunas">LUNAS</span>
+        <span id="sBelum">BELUM</span>
+      </div>
 
-<div style="padding:18px">
-<div><b>FAKTUR #:</b> <span id="pInv"></span></div>
-<div><b>Tanggal:</b> <span id="pDate"></span></div>
-<div><b>Nama:</b> <span id="pCust"></span></div>
-<div><b>No HP:</b> <span id="pHp"></span></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Paket</th>
+            <th>Jumlah</th>
+            <th>Harga</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
 
-<div class="stamp">
-<span id="stampLunas">LUNAS</span>
-<span id="stampBelum">BELUM</span>
-<span id="stampDP">DP</span>
-</div>
+      <table class="totals">
+        <tr><td>Subtotal</td><td id="pSub" class="num"></td></tr>
+        <tr><td>DP</td><td id="pDP" class="num"></td></tr>
+        <tr class="kek"><td>Kekurangan</td><td id="pBal" class="num"></td></tr>
+      </table>
 
-<table class="table">
-<thead>
-<tr>
-<th>Paket</th>
-<th>Jumlah</th>
-<th>Harga</th>
-<th>Total</th>
-</tr>
-</thead>
-<tbody id="rows"></tbody>
-</table>
+      <div class="pay">
+        <div id="pNote" style="margin-bottom:12px"></div>
+        Pembayaran ke Bank Mandiri<br>
+        Atas Nama: Dani Ariwibowo<br>
+        Rekening: 136-001-339-280-5
+      </div>
+    </div>
+  </div>
 
-<table class="totals">
-<tr><td>Subtotal</td><td id="pSub" class="num"></td></tr>
-<tr><td>DP</td><td id="pDP" class="num"></td></tr>
-<tr class="kek"><td>Kekurangan</td><td id="pBal" class="num"></td></tr>
-</table>
-
-<div style="margin-top:16px;font-size:13px">
-Pembayaran ke Bank Mandiri<br>
-Atas Nama: Dani Ariwibowo<br>
-Rekening: 136-001-339-280-5
-</div>
-</div>
-
-</div>
 </div>
 
 <script>
-const rupiah=n=>"Rp "+Number(n).toLocaleString("id-ID");
-const KEY="inv_no_v1";
-const START=32244;
+/** =================== CONFIG =================== **/
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwMZa4ptlGBqzk1wiIKQDEDlA2kID915z6Vaxt37tkjEZSRwq5XMNrC-rS8o_0UX8Sr/exec";
+const KEY_INV = "inv_auto_no";
+const START_INV = 32244;
+
+/** =================== HELPERS =================== **/
+const rupiah = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
 
 function nextNo(){
-let v=localStorage.getItem(KEY);
-let next=v?Number(v)+1:START;
-localStorage.setItem(KEY,next);
-return next;
+  let v = localStorage.getItem(KEY_INV);
+  let n = v ? (Number(v) + 1) : START_INV;
+  localStorage.setItem(KEY_INV, n);
+  return n;
 }
 
-document.getElementById("logoInput").addEventListener("change",e=>{
-const f=e.target.files[0];
-const r=new FileReader();
-r.onload=ev=>localStorage.setItem("logo_data",ev.target.result);
-r.readAsDataURL(f);
+function fmtDateISOToID(iso){
+  if(!iso) return "";
+  // iso: YYYY-MM-DD
+  const [y,m,d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+/** =================== LOGO SAVE =================== **/
+document.getElementById("logoInput").addEventListener("change", (e)=>{
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = (ev)=> localStorage.setItem("logo_data", ev.target.result);
+  r.readAsDataURL(f);
 });
 
+/** =================== PAKET SYNC =================== **/
+function syncPaket(){
+  const val = document.getElementById("paket").value.split("|");
+  const price = Number(val[0] || 0);
+  const name  = val[1] || "";
+
+  if(name === "Custom"){
+    document.getElementById("mainName").value = "";
+    document.getElementById("priceMain").value = "";
+    document.getElementById("mainName").focus();
+  } else {
+    document.getElementById("mainName").value = name;
+    document.getElementById("priceMain").value = price;
+  }
+}
+
+/** init default values */
+(function init(){
+  // default: set paket fields
+  syncPaket();
+  // default date: today
+  const today = new Date();
+  const iso = today.toISOString().slice(0,10);
+  document.getElementById("tourDate").value = iso;
+
+  // load logo if exists
+  const logo = localStorage.getItem("logo_data");
+  if(logo) document.getElementById("pLogo").src = logo;
+})();
+
+/** =================== MAIN GENERATE =================== **/
 function generate(){
-const no=nextNo();
-document.getElementById("pInv").textContent=no;
-document.getElementById("pDate").textContent=new Date().toLocaleDateString("id-ID");
-document.getElementById("pCust").textContent=document.getElementById("custName").value;
-document.getElementById("pHp").textContent=document.getElementById("custHp").value;
+  // collect
+  const no = nextNo();
 
-const [price,name]=document.getElementById("paket").value.split("|");
-const qty=Number(document.getElementById("qty").value);
-const pr=Number(document.getElementById("price").value||price);
-const total=qty*pr;
+  const tanggalISO = document.getElementById("tourDate").value;
+  const tanggal = fmtDateISOToID(tanggalISO);
 
-document.getElementById("rows").innerHTML=
-`<tr>
-<td>${name}</td>
-<td class="center">${qty}</td>
-<td class="num">${rupiah(pr)}</td>
-<td class="num">${rupiah(total)}</td>
-</tr>`;
+  const nama = (document.getElementById("custName").value || "").trim();
+  const hp   = (document.getElementById("custHp").value || "").trim();
 
-const dp=Number(document.getElementById("dp").value);
-document.getElementById("pSub").textContent=rupiah(total);
-document.getElementById("pDP").textContent="-"+rupiah(dp);
-document.getElementById("pBal").textContent=rupiah(Math.max(total-dp,0));
+  const paket = (document.getElementById("mainName").value || "").trim();
+  const qty   = Number(document.getElementById("qty").value || 0);
+  const price = Number(document.getElementById("priceMain").value || 0);
 
-document.getElementById("stampLunas").classList.remove("show");
-document.getElementById("stampBelum").classList.remove("show");
-document.getElementById("stampDP").classList.remove("show");
+  const dp    = Number(document.getElementById("dp").value || 0);
+  const total = qty * price;
+  const sisa  = Math.max(total - dp, 0);
 
-const mode=document.getElementById("stampMode").value;
-if(mode==="lunas")document.getElementById("stampLunas").classList.add("show");
-if(mode==="belum")document.getElementById("stampBelum").classList.add("show");
-if(mode==="dp")document.getElementById("stampDP").classList.add("show");
+  const mode  = document.getElementById("stampMode").value; // none | lunas | belum
+  const status = (mode==="lunas") ? "LUNAS" : (mode==="belum") ? "BELUM LUNAS" : "TANPA";
 
-const logo=localStorage.getItem("logo_data");
-if(logo)document.getElementById("pLogo").src=logo;
+  const note = (document.getElementById("note").value || "").trim();
 
-window.print();
+  // minimal validation (biar tidak kosong parah)
+  if(!paket){
+    alert("Nama paket masih kosong. Pilih paket atau isi nama paket (Custom).");
+    return;
+  }
+  if(!(qty > 0)){
+    alert("Jumlah unit minimal 1.");
+    return;
+  }
+  if(!(price >= 0)){
+    alert("Harga tidak valid.");
+    return;
+  }
+
+  // ====== send to Google Sheet (non-blocking) ======
+  fetch(SHEET_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      no: no,
+      tanggal: tanggal,
+      nama: nama,
+      hp: hp,
+      paket: paket,
+      jumlah: qty,
+      total: total,
+      dp: dp,
+      sisa: sisa,
+      status: status
+    })
+  }).catch(()=>{});
+
+  // ====== fill print area ======
+  document.getElementById("pInv").textContent = no;
+  document.getElementById("pTourDate").textContent = tanggal;
+  document.getElementById("pCust").textContent = nama;
+  document.getElementById("pHp").textContent = hp;
+
+  // logo
+  const logo = localStorage.getItem("logo_data");
+  if(logo) document.getElementById("pLogo").src = logo;
+
+  // stamp
+  document.getElementById("sLunas").classList.remove("show");
+  document.getElementById("sBelum").classList.remove("show");
+  if(mode==="lunas") document.getElementById("sLunas").classList.add("show");
+  if(mode==="belum") document.getElementById("sBelum").classList.add("show");
+
+  // rows
+  document.getElementById("rows").innerHTML = `
+    <tr>
+      <td>${escapeHtml(paket)}</td>
+      <td class="center">${qty}</td>
+      <td class="num">${rupiah(price)}</td>
+      <td class="num">${rupiah(total)}</td>
+    </tr>
+  `;
+
+  // totals
+  document.getElementById("pSub").textContent = rupiah(total);
+  document.getElementById("pDP").textContent  = "-" + rupiah(dp);
+  document.getElementById("pBal").textContent = rupiah(sisa);
+
+  // note
+  document.getElementById("pNote").innerHTML = note ? (`<b>Catatan:</b> ${escapeHtml(note)}`) : "";
+
+  // print
+  window.print();
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 </script>
 
